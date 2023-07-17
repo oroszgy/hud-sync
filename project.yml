@@ -1,0 +1,38 @@
+title: "NerKor-UD-Sync"
+description: >
+  This project syncs PoS/Morph. annotation across corpora annotated with UD-like schema.
+
+
+# These are the directories that the project needs. The project CLI will make
+# sure that they always exist.
+directories: [ "data", "data/raw", "data/interim", "data/processed" ]
+
+assets:
+#   Universal dependencies
+  - dest: data/raw/UD
+    git:
+      repo: https://github.com/UniversalDependencies/UD_Hungarian-Szeged
+      branch: r2.10
+      path: ""
+
+  # NerKor
+  - dest: data/raw/NerKor
+    git:
+      repo: https://github.com/nytud/NYTK-NerKor
+      branch: main
+      path: data
+
+workflows:
+  all:
+    - diff
+
+commands:
+  - name: diff
+    help: "Compares different UD annotated corpora"
+    script:
+      - python -m sync diff data/raw/UD data/raw/NerKor data/interim/diff.db
+    deps:
+      - data/raw/UD
+      - data/raw/NerKor
+    outputs:
+      - data/interim/diff.db

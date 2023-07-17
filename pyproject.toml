@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "nerkor-sync"
+version = "0.1.0"
+description = ""
+authors = ["Gyorgy Orosz <gyorgy@orosz.link>"]
+readme = "README.md"
+packages = [{include = "nerkor_sync"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+weasel = "^0.1.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

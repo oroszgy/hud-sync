@@ -36,3 +36,8 @@ commands:
       - data/raw/NerKor
     outputs:
       - data/interim/diff.db
+
+  - name: publish
+    help: "Upload diff db"
+    script:
+      - python -m ud_sync upload-db data/interim/diff.db

@@ -533,17 +533,6 @@ dotenv = ["python-dotenv (>=0.10.4)"]
 email = ["email-validator (>=1.0.3)"]
 
 [[package]]
-name = "pydbhub"
-version = "0.0.4"
-description = "pydbhub"
-optional = false
-python-versions = "*"
-files = [
-    {file = "pydbhub-0.0.4-py2.py3-none-any.whl", hash = "sha256:a0e5e26261b5bd806a1a028f6d5db3931de2a32a81bc68a897a961a8535396aa"},
-    {file = "pydbhub-0.0.4.tar.gz", hash = "sha256:57b184a0f67de70b1bdda56af30e24b8b93c4f6b36e73e0049b28092a0060fb9"},
-]
-
-[[package]]
 name = "requests"
 version = "2.31.0"
 description = "Python HTTP for Humans."
@@ -931,4 +920,4 @@ wasabi = ">=0.9.1,<1.2.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "0591d8237c8cf090614329fb06d0bf5a3ea230080d9fd36f22026d47c0909140"
+content-hash = "7573a92d9edfd1d1475843bce5c03cce011aef63639fa93cdfc7479e067ac6ef"

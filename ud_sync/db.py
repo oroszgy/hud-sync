@@ -87,50 +87,101 @@ class DBWriter:
         )
 
     def _add_views(self):
+        # 1. Lemma diffs
         # language=SQLite
-        self._conn.execute("""
+        self._conn.execute(
+            """
             CREATE VIEW ud_lemma_freqs AS
             SELECT token, pos, morph, lemma, SUM(freq) as freq
             FROM frequencies
             WHERE corpus = 'ud'
             GROUP BY token, pos, morph
             ORDER BY freq DESC
-        """)
+        """
+        )
 
         # language=SQLite
-        self._conn.execute("""
+        self._conn.execute(
+            """
             CREATE VIEW nerkor_lemma_freqs AS
             SELECT token, pos, morph, lemma, SUM(freq) as freq
             FROM frequencies
             WHERE corpus = 'nerkor'
             GROUP BY token, pos, morph
             ORDER BY freq DESC
-        """)
+        """
+        )
 
-        self._conn.execute("""
+        # language=SQLite
+        self._conn.execute(
+            """
             CREATE VIEW lemma_diffs AS
-            SELECT ud.token token, ud.pos pos, ud.morph morph, nerkor.lemma, nerkor.freq, ud.lemma, ud.freq
+            SELECT ud.token token, ud.pos pos, ud.morph morph, 
+                nerkor.lemma nerkor_lemma, nerkor.freq nerkor_lemma_freq, 
+                ud.lemma ud_lemma, ud.freq ud_lemma_freq
             FROM main.nerkor_lemma_freqs nerkor
             INNER JOIN ud_lemma_freqs ud ON nerkor.token = ud.token AND nerkor.pos = ud.pos AND nerkor.morph = ud.morph
             WHERE ud.lemma <> nerkor.lemma 
             ORDER BY nerkor.freq DESC
-        """)
+        """
+        )
 
-        self._conn.execute("""
+        # 2. Morph. ana. diffs
+
+        # language=SQLite
+        self._conn.execute(
+            """
             CREATE VIEW ud_ana_freqs AS
             SELECT token, pos, morph, SUM(freq) as freq
             FROM frequencies
             WHERE corpus = 'ud'
             GROUP BY token, pos, morph
             ORDER BY freq DESC
-        """)
+        """
+        )
 
-        self._conn.execute("""
+        # language=SQLite
+        self._conn.execute(
+            """
             CREATE VIEW nerkor_ana_freqs AS
             SELECT token, pos, morph, SUM(freq) as freq
             FROM frequencies
             WHERE corpus = 'nerkor'
             GROUP BY token
             ORDER BY freq DESC
-        """)
+        """
+        )
 
+        # language=SQLite
+        self._conn.execute(
+            """
+            CREATE VIEW nerkor_only_anas AS
+            SELECT nerkor_ana_freqs.token, nerkor_ana_freqs.pos, nerkor_ana_freqs.morph, nerkor_ana_freqs.freq
+            FROM nerkor_ana_freqs
+                     INNER JOIN
+                 (SELECT token, pos, morph
+                  FROM nerkor_ana_freqs
+                  EXCEPT
+                  SELECT token, pos, morph
+                  FROM ud_ana_freqs) nk_only
+                 ON nk_only.token = nerkor_ana_freqs.token AND nk_only.morph = nerkor_ana_freqs.morph AND
+                    nk_only.pos = nerkor_ana_freqs.pos
+            ORDER BY freq DESC
+        """
+        )
+        self._conn.execute(
+            """
+            CREATE VIEW ud_only_anas AS
+            SELECT ud_ana_freqs.token, ud_ana_freqs.pos, ud_ana_freqs.morph, ud_ana_freqs.freq
+            FROM ud_ana_freqs
+                     INNER JOIN
+                 (SELECT token, pos, morph
+                  FROM ud_ana_freqs
+                  EXCEPT
+                  SELECT token, pos, morph
+                  FROM nerkor_ana_freqs) ud_only
+                 ON ud_only.token = ud_ana_freqs.token AND ud_only.morph = ud_ana_freqs.morph AND
+                    ud_only.pos = ud_ana_freqs.pos
+            ORDER BY freq DESC
+        """
+        )

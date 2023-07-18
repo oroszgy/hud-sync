@@ -12,8 +12,6 @@ weasel = "^0.1.1"
 typer = "~0.7.0"
 conllu = "^4.5.3"
 spacy = "^3.6.0"
-pydbhub = "^0.0.4"
-
 
 [build-system]
 requires = ["poetry-core"]

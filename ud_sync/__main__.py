@@ -8,7 +8,7 @@ from conllu import SentenceList
 from typer import Typer
 
 from ud_sync.db import TokenAnalysis, DBWriter
-from ud_sync.utils import clean_lemmata
+from ud_sync.utils import normalize
 
 logging.basicConfig(
     level=logging.INFO,
@@ -25,7 +25,7 @@ def diff(ud_path: Path, nerkor_path: Path, diff_db_path: Path):
     ud_data: SentenceList = SentenceList()
     for ud_file in ud_path.glob("*.conllu"):
         sentences: SentenceList = conllu.parse(ud_file.read_text())
-        clean_lemmata(sentences)
+        normalize(sentences)
         ud_data.extend(sentences)
 
     logger.info(f"Read UD corpus: {len(ud_data)} sentences")
@@ -34,6 +34,7 @@ def diff(ud_path: Path, nerkor_path: Path, diff_db_path: Path):
     nerkor_data: SentenceList = SentenceList()
     for nk_file in nerkor_path.glob("**/*.conllup"):
         sentences: SentenceList = conllu.parse(nk_file.read_text())
+        normalize(sentences)
         nerkor_data.extend(sentences)
 
     logger.info(f"Read NerKor corpus: {len(nerkor_data)} sentences")

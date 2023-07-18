@@ -30,7 +30,7 @@ commands:
   - name: diff
     help: "Compares different UD annotated corpora"
     script:
-      - python -m sync diff data/raw/UD data/raw/NerKor data/interim/diff.db
+      - python -m ud_sync diff data/raw/UD data/raw/NerKor data/interim/diff.db
     deps:
       - data/raw/UD
       - data/raw/NerKor

@@ -94,6 +94,7 @@ class DBWriter:
             FROM frequencies
             WHERE corpus = 'ud'
             GROUP BY token, pos, morph
+            ORDER BY freq DESC
         """)
 
         # language=SQLite
@@ -103,6 +104,7 @@ class DBWriter:
             FROM frequencies
             WHERE corpus = 'nerkor'
             GROUP BY token, pos, morph
+            ORDER BY freq DESC
         """)
 
         self._conn.execute("""
@@ -110,5 +112,25 @@ class DBWriter:
             SELECT ud.token token, ud.pos pos, ud.morph morph, nerkor.lemma, nerkor.freq, ud.lemma, ud.freq
             FROM main.nerkor_lemma_freqs nerkor
             INNER JOIN ud_lemma_freqs ud ON nerkor.token = ud.token AND nerkor.pos = ud.pos AND nerkor.morph = ud.morph
-            WHERE ud.lemma <> nerkor.lemma ORDER BY nerkor.freq DESC
+            WHERE ud.lemma <> nerkor.lemma 
+            ORDER BY nerkor.freq DESC
         """)
+
+        self._conn.execute("""
+            CREATE VIEW ud_ana_freqs AS
+            SELECT token, pos, morph, SUM(freq) as freq
+            FROM frequencies
+            WHERE corpus = 'ud'
+            GROUP BY token, pos, morph
+            ORDER BY freq DESC
+        """)
+
+        self._conn.execute("""
+            CREATE VIEW nerkor_ana_freqs AS
+            SELECT token, pos, morph, SUM(freq) as freq
+            FROM frequencies
+            WHERE corpus = 'nerkor'
+            GROUP BY token
+            ORDER BY freq DESC
+        """)
+

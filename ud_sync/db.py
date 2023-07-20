@@ -147,7 +147,7 @@ class DBWriter:
             SELECT token, pos, morph, SUM(freq) as freq
             FROM frequencies
             WHERE corpus = 'nerkor'
-            GROUP BY token
+            GROUP BY token, pos, morph
             ORDER BY freq DESC
         """
         )

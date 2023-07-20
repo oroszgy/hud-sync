@@ -10,6 +10,13 @@ poetry install
 
 ## Usage
 
+Create diff:
 ```bash
 poetry run weasel run diff
+```
+
+Publish the DB:
+
+```bash
+env $(cat .env | xargs) weasel run publish
 ```

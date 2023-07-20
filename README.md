@@ -15,7 +15,7 @@ Create diff:
 poetry run weasel run diff
 ```
 
-Publish the DB:
+Publish the DB to https://dbhub.io/oroszgy/hud_diff.sqlite
 
 ```bash
 env $(cat .env | xargs) weasel run publish

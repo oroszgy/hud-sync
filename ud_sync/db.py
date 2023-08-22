@@ -168,5 +168,18 @@ class DBWriter:
             
             CREATE VIEW ud_only_anas_on_common_tokens AS
             SELECT * FROM ud_only_anas WHERE token IN (SELECT token FROM nerkor_ana_freqs);
+            
+            CREATE VIEW ana_diffs_on_common_tokens AS
+            SELECT nk.token,
+               nk.pos   nk_pos,
+               nk.morph nk_morph,
+               nk.freq  nk_freq,
+               ud.pos   ud_pos,
+               ud.morph ud_morph,
+               ud.freq  ud_freq
+            FROM nerkor_only_anas_on_common_tokens nk
+                 INNER JOIN ud_only_anas_on_common_tokens ud
+                            ON nk.token = ud.token
+            ORDER BY nk_freq DESC;
         """
         )

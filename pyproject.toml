@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "nerkor-sync"
+name = "hud-sync"
 version = "0.1.0"
-description = ""
+description = "This project aims to diff and sync morphosyntactic annotations across UD-annotated corpora."
 authors = ["Gyorgy Orosz <gyorgy@orosz.link>"]
 readme = "README.md"
-packages = [{include = "nerkor_sync"}]
+packages = [{include = "ud_sync"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"

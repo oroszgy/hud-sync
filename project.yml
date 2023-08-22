@@ -1,6 +1,6 @@
 title: "NerKor-UD-Sync"
 description: >
-  This project syncs PoS/Morph. annotation across corpora annotated with UD-like schema.
+  This project aims to diff and sync morphosyntactic annotations across UD-annotated corpora.
 
 
 # These are the directories that the project needs. The project CLI will make
@@ -9,6 +9,9 @@ directories: [ "data", "data/raw", "data/interim", "data/processed" ]
 
 env:
   API_KEY: DBHUB_KEY
+
+vars:
+  slug: ud_nkv21
 
 assets:
 #   Universal dependencies
@@ -22,7 +25,7 @@ assets:
   - dest: data/raw/NerKor
     git:
       repo: https://github.com/nytud/NYTK-NerKor
-      branch: main
+      branch: v2.1
       path: data
 
 workflows:
@@ -30,6 +33,11 @@ workflows:
     - diff
 
 commands:
+  - name: clean
+    help: "Removes data, resets the repo state"
+    script:
+      - rm -rf data
+
   - name: diff
     help: "Compares different UD annotated corpora"
     script:
@@ -40,11 +48,15 @@ commands:
     outputs:
       - data/interim/diff.db
 
+  - name: unpublish
+    help: "Delete remote diff db"
+    script:
+      - curl -F apikey=${env.API_KEY} -F dbname=hud_diff_${vars.slug}.sqlite https://api.dbhub.io/v1/delete
+
   - name: publish
     help: "Upload diff db"
     script:
-      - curl -F apikey=${env.API_KEY} -F dbname=hud_diff.sqlite https://api.dbhub.io/v1/delete
-      - curl -F apikey=${env.API_KEY} -F dbname=hud_diff.sqlite -F file=@./data/interim/diff.db  -F force=true
+      - curl -F apikey=${env.API_KEY} -F dbname=hud_diff_${vars.slug}.sqlite -F file=@./data/interim/diff.db  -F force=true
         -F public=true https://api.dbhub.io/v1/upload
     deps:
       - data/interim/diff.db

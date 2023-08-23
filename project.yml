@@ -11,14 +11,14 @@ env:
   API_KEY: DBHUB_KEY
 
 vars:
-  slug: ud_nkv21
+  slug: ud_v212-nk_v21
 
 assets:
 #   Universal dependencies
   - dest: data/raw/UD
     git:
       repo: https://github.com/UniversalDependencies/UD_Hungarian-Szeged
-      branch: r2.10
+      branch: r2.12
       path: ""
 
   # NerKor
@@ -56,7 +56,7 @@ commands:
   - name: publish
     help: "Upload diff db"
     script:
-      - curl -F apikey=${env.API_KEY} -F dbname=hud_diff_${vars.slug}.sqlite -F file=@./data/interim/diff.db  -F force=true
+      - curl -F apikey=${env.API_KEY} -F dbname=hud-diff-${vars.slug}.sqlite -F file=@./data/interim/diff.db  -F force=true
         -F public=true https://api.dbhub.io/v1/upload
     deps:
       - data/interim/diff.db
